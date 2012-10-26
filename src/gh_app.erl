@@ -8,9 +8,11 @@
 
 start() ->
 	application:start(crypto),
+	application:start(public_key),
 	application:start(ssl),
 	application:start(lhttpc),
-    application:start(octoerl)
+    application:start(octoerl).
+
 
 start(_Type, _StartArgs) ->
     gh_sup:start_link().
