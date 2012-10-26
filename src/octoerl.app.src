@@ -1,0 +1,8 @@
+%% -*- erlang -*-
+{application, octoerl,
+ [{description, "github.com API for Erlang"},
+  {vsn, git},
+  {modules, []},
+  {registered, []},
+  {env, []},
+  {applications, [kernel, stdlib, crypto, ssl, lhttpc]}]}.

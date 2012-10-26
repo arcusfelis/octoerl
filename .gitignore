@@ -1,0 +1,17 @@
+ebin/*
+deps/*
+*.swp
+*.dump
+*.trace  
+.eunit
+.emark
+.test
+.~*
+*.un~
+fprof.trace
+doc
+Mnesia.*
+data
+test/octoerl_SUITE_data
+logs/*
+*.beam
