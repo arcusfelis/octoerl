@@ -9,7 +9,10 @@
 
 -export([
         search_case/0,
-        search_case/1
+        search_case/1,
+
+        list_commits_case/0,
+        list_commits_case/1
 ]).
 
 -compile([{parse_transform, lager_transform}]).
@@ -52,7 +55,7 @@ end_per_testcase(_Case, _Config) ->
 %% Tests
 %% ----------------------------------------------------------------------
 groups() ->
-    [{main_group, [], [search_case]}].
+    [{main_group, [], [search_case, list_commits_case]}].
 
 all() ->
     [{group, main_group}].
@@ -62,16 +65,40 @@ all() ->
 search_case() ->
     [{require, common_conf, octoerl_common_config}].
 
+list_commits_case() ->
+    [{require, common_conf, octoerl_common_config}].
+
 -include_lib("eunit/include/eunit.hrl").
 
 
-search_case(_CommonTestCfg) ->
-    {ok, Server} = gh_server:start_link([]),
-    SearchResult = gh_server:search_repositories(Server, "otp"),
-    io:format(user, "~nSearchResult: ~p~n", [SearchResult]),
+search_case(CommonTestCfg) ->
+    Con = create_gh_connector(),
+%   DataDir = ?config(data_dir, CommonTestCfg), 
+    SearchResult = gh_lib:extract_all(Con, "erlang", "erlang", 1),
+%   FilePath = filename:join(DataDir, search_result_dump.bin),
+%   ok = filelib:ensure_dir(FilePath),
+%   file:write_file(FilePath, erlang:term_to_binary(SearchResult)),
     ok.
+
+list_commits_case(_CommonTestCfg) ->
+    Con = create_gh_connector(),
+    gh_lib:extract_application_structure(Con, "arcusfelis", "csv_parser"),
+
+    %% Check:
+    %% `rebar.config', `src/*.app.src'.
+    %% `test/' directory.
+
+    ok.
+
+create_gh_connector() ->
+    {ok, CacheServer} = riakc_pb_socket:start_link("127.0.0.1", 8087),
+    {ok, Con} = gh_api:new([{cache_server, CacheServer}]),
+    Con.
+
+
 
 
 %% Helpers
 %% ----------------------------------------------------------------------
+
 
